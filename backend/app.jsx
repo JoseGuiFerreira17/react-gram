@@ -16,6 +16,8 @@ app.use(cors({ credentials: true, origin: url_origin }));
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
+require("./config/db.jsx");
+
 const router = require("./routes/Router.jsx");
 
 app.use(router);
