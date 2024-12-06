@@ -31,8 +31,6 @@ const register = async (req, res) => {
       return res.status(500).json({ erroros: "Houve um problema ao criar o post." });
     }
 
-    console.log(newPhoto);
-
     res.status(201).json(newPhoto);
   } catch (error) {
     console.log(error);
@@ -69,11 +67,23 @@ const deletePhoto = async (req, res) => {
 const getPhotos = async (req, res) => {
   const photos = await Photo.find().sort({ createdAt: -1 });
 
-  if (!photos) {
-    return res.status(404).send("Nenhum post encontrado.");
-  }
-
   res.status(200).send(photos);
 };
 
-module.exports = { register, deletePhoto, getPhotos };
+const getPUserPhotos = async (req, res) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    return res.status(404).json({ errors: "Usuário não encontrado." });
+  }
+
+  const photos = await Photo.find({ userId: id })
+    .sort([["createdAt", -1]])
+    .exec();
+
+  res.status(200).json(photos);
+};
+
+module.exports = { register, deletePhoto, getPhotos, getPUserPhotos };
