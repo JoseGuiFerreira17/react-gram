@@ -4,24 +4,41 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 
 const register = async (req, res) => {
-  const { title } = req.body;
-  const image = req.file.filename;
+  try {
+    const { title } = req.body;
+    const image = req.file.filename;
 
-  const reqUser = req.user;
-  const user = await User.findById(reqUser._id);
+    const reqUser = req.user;
 
-  const newPhoto = new Photo({
-    title,
-    image,
-    user: user._id,
-    userName: user.name,
-  });
+    if (!reqUser) {
+      return res.status(404).json({ errors: "Usuário não encontrado." });
+    }
 
-  if (!newPhoto) {
-    return res.status(500).send("Houve um problema ao criaro post.");
+    const user = await User.findById(reqUser._id);
+
+    if (!user) {
+      return res.status(404).json({ errors: "Usuário não encontrado." });
+    }
+
+    const newPhoto = await Photo.create({
+      title,
+      image,
+      userId: user._id,
+      userName: user.name,
+    });
+
+    if (!newPhoto) {
+      return res.status(500).json({ erroros: "Houve um problema ao criar o post." });
+    }
+
+    console.log(newPhoto);
+
+    res.status(201).json(newPhoto);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: "Houve um problema ao criar o post." });
+    return;
   }
-
-  res.status(201).send(newPhoto);
 };
 
 const deletePhoto = async (req, res) => {
@@ -49,4 +66,14 @@ const deletePhoto = async (req, res) => {
   }
 };
 
-module.exports = { register, deletePost: deletePhoto };
+const getPhotos = async (req, res) => {
+  const photos = await Photo.find().sort({ createdAt: -1 });
+
+  if (!photos) {
+    return res.status(404).send("Nenhum post encontrado.");
+  }
+
+  res.status(200).send(photos);
+};
+
+module.exports = { register, deletePhoto, getPhotos };
