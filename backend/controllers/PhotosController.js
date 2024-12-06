@@ -140,4 +140,38 @@ const like = async (req, res) => {
   res.status(200).json(photo);
 };
 
-module.exports = { register, deletePhoto, getPhotos, getPUserPhotos, getPhotoById, update, like };
+const comment = async (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  const reqUser = req.user;
+  const user = await User.findById(reqUser._id);
+
+  const photo = await Photo.findById(id);
+
+  if (!photo) {
+    return res.status(404).json({ errors: "Post não encontrado." });
+  }
+
+  photo.comments.push({
+    comment,
+    userId: user._id,
+    userName: user.name,
+    userImage: user.profielImage,
+  });
+
+  await photo.save();
+
+  res.status(200).json(photo);
+};
+
+module.exports = {
+  register,
+  deletePhoto,
+  getPhotos,
+  getPUserPhotos,
+  getPhotoById,
+  update,
+  like,
+  comment,
+};
