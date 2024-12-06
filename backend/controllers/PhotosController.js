@@ -98,4 +98,25 @@ const getPhotoById = async (req, res) => {
   res.status(200).json(photo);
 };
 
-module.exports = { register, deletePhoto, getPhotos, getPUserPhotos, getPhotoById };
+const update = async (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  const reqUser = req.user;
+
+  const photo = await Photo.findById(id);
+
+  if (!photo) {
+    return res.status(404).json({ errors: "Post não encontrado." });
+  }
+
+  if (!photo.userId.equals(reqUser._id)) {
+    return res.status(401).json({ errors: "Você não tem permissão para editar este post." });
+  }
+
+  if (title) photo.title = title;
+  await photo.save();
+
+  res.status(200).json({ photo, message: "Post atualizado com sucesso." });
+};
+
+module.exports = { register, deletePhoto, getPhotos, getPUserPhotos, getPhotoById, update };
