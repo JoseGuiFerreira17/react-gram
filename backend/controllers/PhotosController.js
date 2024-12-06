@@ -86,4 +86,16 @@ const getPUserPhotos = async (req, res) => {
   res.status(200).json(photos);
 };
 
-module.exports = { register, deletePhoto, getPhotos, getPUserPhotos };
+const getPhotoById = async (req, res) => {
+  const { id } = req.params;
+
+  const photo = await Photo.findById(id);
+
+  if (!photo) {
+    return res.status(404).json({ errors: "Post não encontrado." });
+  }
+
+  res.status(200).json(photo);
+};
+
+module.exports = { register, deletePhoto, getPhotos, getPUserPhotos, getPhotoById };
