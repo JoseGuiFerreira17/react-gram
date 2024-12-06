@@ -24,4 +24,29 @@ const register = async (req, res) => {
   res.status(201).send(newPhoto);
 };
 
-module.exports = { register };
+const deletePhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const reqUser = req.user;
+
+    const photo = await Photo.findById(id);
+
+    if (!photo) {
+      return res.status(404).send("Post não encontrado.");
+    }
+
+    if (photo.userId.equals(reqUser._id)) {
+      return res.status(401).send("Você não tem permissão para deletar este post.");
+    }
+
+    await Photo.findByIdAndDelete(photo._id);
+
+    res.status(200).send({ message: "Post deletado com sucesso." });
+  } catch (error) {
+    res.status(500).send("Houve um problema ao deletar o post.");
+    return;
+  }
+};
+
+module.exports = { register, deletePost: deletePhoto };
