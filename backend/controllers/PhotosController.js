@@ -119,4 +119,25 @@ const update = async (req, res) => {
   res.status(200).json({ photo, message: "Post atualizado com sucesso." });
 };
 
-module.exports = { register, deletePhoto, getPhotos, getPUserPhotos, getPhotoById, update };
+const like = async (req, res) => {
+  const { id } = req.params;
+  const reqUser = req.user;
+
+  const photo = await Photo.findById(id);
+
+  if (!photo) {
+    return res.status(404).json({ errors: "Post não encontrado." });
+  }
+
+  if (photo.likes.includes(reqUser._id)) {
+    photo.likes = photo.likes.filter((like) => like.toString() !== reqUser._id.toString());
+  } else {
+    photo.likes.push(reqUser._id);
+  }
+
+  await photo.save();
+
+  res.status(200).json(photo);
+};
+
+module.exports = { register, deletePhoto, getPhotos, getPUserPhotos, getPhotoById, update, like };

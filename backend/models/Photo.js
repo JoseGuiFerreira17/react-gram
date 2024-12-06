@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const photoSchema = new Schema(
   {
-    title: { type: String, required: true },
+    title: { type: String, required: false },
     image: { type: String, required: true },
     description: { type: String, required: false },
     likes: { type: Array, required: false },
