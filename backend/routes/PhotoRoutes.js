@@ -10,6 +10,7 @@ const {
   update,
   like,
   comment,
+  searchPhotos,
 } = require("../controllers/PhotosController");
 
 const {
@@ -32,6 +33,7 @@ router.post(
 router.delete("/:id", authGuard, deletePhoto);
 router.get("/", getPhotos);
 router.get("/user/:id", authGuard, getPUserPhotos);
+router.get("/search", authGuard, searchPhotos);
 router.get("/:id", authGuard, getPhotoById);
 router.put("/:id", authGuard, photoUpdateValidation(), validate, update);
 router.put("/like/:id", authGuard, like);
