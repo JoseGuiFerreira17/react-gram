@@ -19,4 +19,17 @@ const photoCreateValidation = () => {
   ];
 };
 
-module.exports = { photoCreateValidation };
+const photoUpdateValidation = () => {
+  return [
+    body("title")
+      .not()
+      .equals("undefined")
+      .withMessage("O título é obrigatório.")
+      .isString()
+      .withMessage("O título é obrigatório.")
+      .isLength({ min: 3 })
+      .withMessage("O título deve ter no mínimo 3 caracteres."),
+  ];
+};
+
+module.exports = { photoCreateValidation, photoUpdateValidation };

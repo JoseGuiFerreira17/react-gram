@@ -113,7 +113,7 @@ const update = async (req, res) => {
     return res.status(401).json({ errors: "Você não tem permissão para editar este post." });
   }
 
-  if (title) photo.title = title;
+  photo.title = title;
   await photo.save();
 
   res.status(200).json({ photo, message: "Post atualizado com sucesso." });
