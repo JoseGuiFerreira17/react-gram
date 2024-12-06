@@ -18,7 +18,7 @@ const register = async (req, res) => {
   });
 
   if (!newPhoto) {
-    return res.status(500).send("Houve um problema ao criaro post..");
+    return res.status(500).send("Houve um problema ao criaro post.");
   }
 
   res.status(201).send(newPhoto);
