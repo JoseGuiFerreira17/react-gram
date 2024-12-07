@@ -8,7 +8,6 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(user);
     if (user.user) {
       setAuth(true);
     } else {
