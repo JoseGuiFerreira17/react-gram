@@ -1,6 +1,8 @@
 import "./Auth.css";
 
 import { Link } from "react-router-dom";
+import Message from "../../components/Message";
+
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -25,8 +27,6 @@ const Register = () => {
       password,
       passwordConfirmation,
     };
-
-    console.log(user);
 
     dispatch(register(user));
   };
@@ -64,7 +64,9 @@ const Register = () => {
           onChange={(e) => setpasswordConfirmation(e.target.value)}
           value={passwordConfirmation || ""}
         />
-        <input type="submit" value="Cadastrar" />
+        {!loading && <input type="submit" value="Cadastrar" />}
+        {loading && <input type="submit" value="Carregando..." disabled />}
+        {error && <Message msg={error} type="error" />}
       </form>
       <p>
         Já possui uma conta? <Link to="/login">Clique aqui.</Link>

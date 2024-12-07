@@ -6,11 +6,12 @@ const register = async (data) => {
   try {
     const res = await fetch(`${api}/users/register`, config)
       .then((res) => res.json())
-      .catch((error) => error);
+      .catch((err) => err);
 
     if (res) {
       localStorage.setItem("user", JSON.stringify(res));
     }
+    return res;
   } catch (error) {
     console.error("Error:", error);
   }
