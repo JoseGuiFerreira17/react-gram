@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { upload } from "../../utils/config";
 
-import { profile, resetMessage } from "../../slices/userSlice";
+import { profile, updateProfile, resetMessage } from "../../slices/userSlice";
 
 import Message from "../../components/Message";
 
@@ -30,12 +30,30 @@ function EditProfile() {
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const userData = {
+      name,
+    };
+
+    if (bio) userData.bio = bio;
+    if (password) userData.password = password;
+    if (profileImage) userData.profileImage = profileImage;
+
+    const formData = new FormData();
+    for (const key in userData) {
+      formData.append(key, userData[key]);
+    }
+
+    await dispatch(updateProfile(formData));
+
+    setTimeout(() => {
+      dispatch(resetMessage());
+    }, 3000);
   };
 
   const handleFile = (e) => {
@@ -66,29 +84,28 @@ function EditProfile() {
         </label>
         <label>
           <span>Nome</span>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <input type="text" value={name || ""} onChange={(e) => setName(e.target.value)} />
         </label>
         <label>
           <span>Email</span>
-          <input type="email" value={email} disabled />
+          <input type="email" value={email || ""} disabled />
         </label>
         <label>
           <span>Bio</span>
-          <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows="4" />
+          <textarea value={bio || ""} onChange={(e) => setBio(e.target.value)} rows="4" />
         </label>
         <label>
           <span>Senha</span>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        <label>
-          <span>Confirme a senha</span>
           <input
             type="password"
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
+            value={password || ""}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <input type="submit" value="Atualizar" />
+        {loading && <input type="submit" value="Aguarde..." disabled />}
+        {!loading && <input type="submit" value="Atualizar" />}
+        {error && <Message msg={error} type="error" />}
+        {message && <Message msg={message} type="success" />}
       </form>
     </div>
   );
