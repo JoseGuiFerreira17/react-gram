@@ -9,7 +9,7 @@ const Register = () => {
   };
 
   return (
-    <div>
+    <div id="register">
       <h2>ReactGram</h2>
       <p className="subtitle">Cadastre-se para ver as fotos dos seu amigos</p>
       <form onSubmit={handleSubmit}>
